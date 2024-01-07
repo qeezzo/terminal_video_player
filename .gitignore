@@ -7,7 +7,7 @@ tags
 
 *.a
 
-bin/bad_apple
+bin/player
 docs/*
 
 CMakeLists.txt.user

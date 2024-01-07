@@ -1,5 +1,4 @@
 #include "GrayFrame.h"
-#include <iostream>
 #include <opencv2/imgproc.hpp>
 
 using namespace term_vid_player;
@@ -20,8 +19,9 @@ auto GrayFrame::resize(int width, int height) -> void {
     cv::resize(frame, scaled, cv::Size(width, height));
     frame = scaled;
 }
-auto GrayFrame::scale(double scale) -> void {
+auto GrayFrame::scale(double scale) -> GrayFrame& {
     cv::Mat scaled;
     cv::resize(frame, scaled, cv::Size(width() * scale, height() * scale));
     frame = scaled;
+    return *this;
 }

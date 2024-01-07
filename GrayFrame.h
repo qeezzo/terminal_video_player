@@ -24,7 +24,7 @@ class GrayFrame {
     GrayFrame(cv::Mat frame);
 
     auto resize(int width, int height) -> void;
-    auto scale(double scale) -> void;
+    auto scale(double scale) -> GrayFrame&;
 
     auto width() const { return frame.cols; }
     auto height() const { return frame.rows; }
