@@ -9,6 +9,7 @@ add_executable(player
     Video.cpp
     GrayFrame.cpp
     Player.cpp
+    Watcher.cpp
 )
 
 target_precompile_headers(player PRIVATE opencv.h)

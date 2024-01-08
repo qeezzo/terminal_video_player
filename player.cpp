@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Player.h"
+#include "Watcher.h"
 #include "opencv.h"
 
 using namespace term_vid_player;
@@ -21,13 +22,11 @@ int main(int argc, char* argv[]) {
 
 void run(Config const& config) {
     Player player(config);
-
-    // TODO: map keyboard events to Player interface
+    Watcher watcher(player);
 
     player.play();
 
-    /* player.pause(); */
-    /* player.stop(); */
+    watcher.watch();
 }
 
 void help() {

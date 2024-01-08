@@ -11,20 +11,15 @@ auto Player::output_frame_string(std::string& buf) -> void {
 
 auto Player::get_frame_string(GrayFrame const& frame, std::string& buf)
     -> void {
-    int px_count{1};
-    for (auto px = frame.begin(), end = frame.end(); px != end; ++px) {
-
-        buf += get_output_char(*px);
-        if (px_count == frame.width()) {
-            // skip one row cuz assume size of row is as size of two columns
-            // thats why scaleY is multiplied by 2
-            std::advance(px, frame.width());
-
-            buf += "\n";
-            px_count = 0;
+    for (int row = 0; row < frame.height(); ++row) {
+        if (row % 2)
+            continue;
+        for (int col = 0; col < frame.width(); ++col) {
+            buf += get_output_char(frame.at(row, col));
         }
-        ++px_count;
+        buf += '\n';
     }
+    buf.pop_back();
 }
 
 auto Player::process_frame(GrayFrame& frame) -> GrayFrame& {
@@ -38,10 +33,9 @@ auto Player::process_frame(GrayFrame& frame) -> GrayFrame& {
 
 auto Player::next_frame() -> GrayFrame {
     GrayFrame frame;
-    while (frame.empty() and count++ < video.length())
-        video >> frame;
 
-    if (count >= video.length())
+    video >> frame;
+    if (count++ == video.length())
         stop();
 
     return frame;
@@ -54,14 +48,8 @@ auto Player::run() -> void {
     bool paused = false;
 
     const auto gap = std::chrono::milliseconds(1000 / video.fps());
-    auto sync = std::chrono::steady_clock::now();
+    auto sync      = std::chrono::steady_clock::now();
     for (;;) {
-        sync += gap;
-
-        if (std::chrono::steady_clock::now() > sync)
-            continue;
-
-        auto frame = next_frame();
 
         { // handle events
             std::lock_guard lock(mutex);
@@ -69,7 +57,7 @@ auto Player::run() -> void {
                 switch (events.front()) {
                 case Event::play: paused = false; break;
                 case Event::pause: paused = true; break;
-                case Event::stop: running.store(false); return;
+                case Event::stop: running_.store(false); return;
                 }
                 events.pop();
             }
@@ -77,8 +65,18 @@ auto Player::run() -> void {
 
         if (paused) {
             std::this_thread::yield();
+            sync = std::chrono::steady_clock::now();
             continue;
         }
+
+        sync += gap;
+
+        if (std::chrono::steady_clock::now() > sync)
+            continue;
+
+        auto frame = next_frame();
+        if (frame.empty())
+            continue;
 
         process_frame(frame);
         get_frame_string(frame, buffer);
@@ -95,11 +93,15 @@ auto Player::push_event(Event event) -> Player& {
 }
 
 auto Player::play() -> Player& {
-    if (not running.load())
+    if (not running_.load()) {
+        running_.store(true);
         player = std::thread(&Player::run, this);
+    }
     return push_event(Event::play);
 }
 
 auto Player::pause() -> Player& { return push_event(Event::pause); }
 
-auto Player::stop() -> Player& { return push_event(Event::stop); }
+auto Player::stop() -> Player& {
+    return push_event(Event::stop);
+}

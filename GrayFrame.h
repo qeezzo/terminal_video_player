@@ -29,5 +29,13 @@ class GrayFrame {
     auto width() const { return frame.cols; }
     auto height() const { return frame.rows; }
     auto empty() const -> bool { return frame.empty(); }
+
+    auto at(int row, int col) -> unsigned char& {
+        return frame.at<uchar>(row, col);
+    }
+
+    auto at(int row, int col) const -> unsigned char const& {
+        return frame.at<uchar>(row, col);
+    }
 };
 } // namespace term_vid_player

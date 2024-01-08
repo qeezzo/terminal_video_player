@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdlib>
+#include <iostream>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -26,6 +26,6 @@ class Terminal {
         return size.ws_row;
     }
 
-    auto clear() -> void { system("clear"); }
+    auto clear() -> void { std::cout << "\e[2J\e[H"; }
 };
 } // namespace term_vid_player

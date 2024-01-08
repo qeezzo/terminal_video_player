@@ -60,7 +60,7 @@ class Player {
         return output[round(grey / 255.0 * (output.size() - 1))];
     }
 
-    std::atomic<bool> running;
+    std::atomic<bool> running_;
     std::queue<Event> events;
     std::mutex mutex;
     std::thread player;
@@ -93,5 +93,7 @@ class Player {
     auto play() -> Player&;
     auto pause() -> Player&;
     auto stop() -> Player&;
+
+    auto running() -> bool { return running_.load(); }
 };
 } // namespace term_vid_player
