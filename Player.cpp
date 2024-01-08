@@ -66,7 +66,7 @@ auto Player::run() -> void {
         { // handle events
             std::lock_guard lock(mutex);
             if (not events.empty()) {
-                switch (events.back()) {
+                switch (events.front()) {
                 case Event::play: paused = false; break;
                 case Event::pause: paused = true; break;
                 case Event::stop: running.store(false); return;

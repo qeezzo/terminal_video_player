@@ -67,7 +67,7 @@ class Player {
 
     Terminal term;
     Video video;
-    int count;
+    int count{};
     Config config;
 
     // TODO: add exception handling
