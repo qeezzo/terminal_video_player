@@ -9,6 +9,8 @@ Key | Action|
 :---:|:---:
 `q` | `quit`
 `' '` | `pause/play`
+`'l'` | `move +5s forward`
+`'h'` | `move -5s backward`
 
 ## Notes
 - cant play sound yet

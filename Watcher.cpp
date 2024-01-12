@@ -27,3 +27,7 @@ auto Watcher::play_pause() -> void {
         player.pause();
     paused = not paused;
 }
+
+auto Watcher::forward() -> void { player.forward(); }
+
+auto Watcher::backward() -> void { player.backward(); }

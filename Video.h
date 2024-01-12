@@ -22,10 +22,17 @@ class Video {
 
     friend Video& operator>>(Video&, GrayFrame&);
 
-    int length() const { return length_; }
-    int fps() const { return fps_; }
-    int width() const { return width_; }
-    int height() const { return height_; }
+    auto length() const -> int { return length_; }
+    auto fps() const -> int { return fps_; }
+    auto width() const -> int { return width_; }
+    auto height() const -> int { return height_; }
+
+    auto get_next_frame_pos() -> int {
+        return cap.get(cv::CAP_PROP_POS_FRAMES);
+    }
+    auto set_next_frame_pos(int pos) -> bool {
+        return cap.set(cv::CAP_PROP_POS_FRAMES, pos);
+    }
 };
 
 Video& operator>>(Video&, GrayFrame&);

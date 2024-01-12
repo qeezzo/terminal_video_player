@@ -47,7 +47,7 @@ class Config {
     auto source() const -> std::string const& { return file; }
 };
 
-enum class Event { pause, play, stop };
+enum class Event { pause, play, stop, forward, backward };
 
 // const player cant be paused
 class Player {
@@ -70,12 +70,18 @@ class Player {
     int count{};
     Config config;
 
+    // forward / backward
+    int seconds_to_move = 5;
+    auto frames_to_move() const { return seconds_to_move * video.fps(); }
+
     // TODO: add exception handling
     auto run() -> void;
     auto next_frame() -> GrayFrame;
     auto process_frame(GrayFrame&) -> GrayFrame&;
     auto get_frame_string(GrayFrame const&, std::string&) -> void;
     auto output_frame_string(std::string&) -> void;
+    auto move_forward() -> void;
+    auto move_backward() -> void;
 
     auto push_event(Event) -> Player&;
 
@@ -93,6 +99,8 @@ class Player {
     auto play() -> Player&;
     auto pause() -> Player&;
     auto stop() -> Player&;
+    auto forward() -> Player&;
+    auto backward() -> Player&;
 
     auto running() -> bool { return running_.load(); }
 };

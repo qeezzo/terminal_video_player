@@ -41,6 +41,22 @@ auto Player::next_frame() -> GrayFrame {
     return frame;
 }
 
+auto Player::move_forward() -> void {
+    auto pos = video.get_next_frame_pos();
+    pos += frames_to_move();
+    if (pos >= video.length())
+        pos = video.length() - 1;
+    video.set_next_frame_pos(pos);
+}
+
+auto Player::move_backward() -> void {
+    auto pos = video.get_next_frame_pos();
+    pos -= frames_to_move();
+    if (pos < 0)
+        pos = 0;
+    video.set_next_frame_pos(pos);
+}
+
 auto Player::run() -> void {
 
     // avoids many heap allocation requests
@@ -58,6 +74,8 @@ auto Player::run() -> void {
                 case Event::play: paused = false; break;
                 case Event::pause: paused = true; break;
                 case Event::stop: running_.store(false); return;
+                case Event::forward: move_forward(); break;
+                case Event::backward: move_backward(); break;
                 }
                 events.pop();
             }
@@ -102,6 +120,8 @@ auto Player::play() -> Player& {
 
 auto Player::pause() -> Player& { return push_event(Event::pause); }
 
-auto Player::stop() -> Player& {
-    return push_event(Event::stop);
-}
+auto Player::stop() -> Player& { return push_event(Event::stop); }
+
+auto Player::forward() -> Player& { return push_event(Event::forward); }
+
+auto Player::backward() -> Player& { return push_event(Event::backward); }
