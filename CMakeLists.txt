@@ -2,18 +2,24 @@ cmake_minimum_required(VERSION 3.5)
 project(player)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(opencv REQUIRED opencv4)
 
 add_executable(player
-    player.cpp
-
-    Video.cpp
-    GrayFrame.cpp
-    Player.cpp
-    Watcher.cpp
+    src/player.cpp
+    src/Video.cpp
+    src/GrayFrame.cpp
+    src/Player.cpp
+    src/Watcher.cpp
 )
 
-target_precompile_headers(player PRIVATE opencv.h)
+target_precompile_headers(player PRIVATE src/opencv.h)
 
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-target_link_libraries( player ${OpenCV_LIBS})
+target_link_libraries(player PRIVATE ${opencv_LIBRARIES})
+
+target_include_directories(player PRIVATE ${opencv_INCLUDE_DIRS})
