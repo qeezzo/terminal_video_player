@@ -13,8 +13,12 @@ namespace term_vid_player {
 
 class Config {
   private:
-    std::unordered_map<std::string, void (Config::*)()> keys{};
+    std::unordered_map<std::string, void (Config::*)()> keys{
+        {"--dummy", &Config::dummy},
+        {"-d",      &Config::dummy}
+    };
     std::string file;
+    bool is_dummy_ = false;
 
   public:
     Config() = default;
@@ -45,6 +49,11 @@ class Config {
     }
 
     auto source() const -> std::string const& { return file; }
+    auto is_dummy() const -> bool const& { return is_dummy_; }
+
+  private:
+
+    auto dummy() -> void { is_dummy_ = true; }
 };
 
 enum class Event { pause, play, stop, forward, backward };
@@ -70,6 +79,8 @@ class Player {
     int count{};
     Config config;
 
+    bool is_dummy = false;
+
     // forward / backward
     int seconds_to_move = 5;
     auto frames_to_move() const { return seconds_to_move * video.fps(); }
@@ -89,11 +100,14 @@ class Player {
     Player(Player const&)            = delete;
     Player& operator=(Player const&) = delete;
     ~Player() {
-        if (player.joinable())
+        if (player.joinable()) {
+            stop();
             player.join();
+        }
     }
 
-    Player(Config config) : video(config.source()), config(std::move(config)) {}
+    Player(Config config)
+        : video(config.source()), is_dummy(config.is_dummy()), config(std::move(config)) {}
 
     // interface
     auto play() -> Player&;

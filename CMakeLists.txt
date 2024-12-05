@@ -23,3 +23,5 @@ target_precompile_headers(player PRIVATE src/opencv.h)
 target_link_libraries(player PRIVATE ${opencv_LIBRARIES})
 
 target_include_directories(player PRIVATE ${opencv_INCLUDE_DIRS})
+
+add_subdirectory(tests/)

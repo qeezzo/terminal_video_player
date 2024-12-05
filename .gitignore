@@ -7,8 +7,12 @@ tags
 
 *.a
 
+build
 bin/player
 docs/*
+.cache/
+
+*.mp4
 
 CMakeLists.txt.user
 CMakeCache.txt

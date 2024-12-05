@@ -4,6 +4,8 @@
 using namespace term_vid_player;
 
 auto Player::output_frame_string(std::string& buf) -> void {
+    if (is_dummy) return;
+
     term.clear();
     std::cout << buf << std::flush;
     buf.clear();
